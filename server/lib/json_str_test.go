@@ -143,6 +143,34 @@ func TestBasicInnerObject(t *testing.T) {
 	}
 }
 
+func TestKeyNames(t *testing.T) {
+	rawJsonStr := "{" +
+		"    \"info\": \"random info here\"," +
+		"    \"someInt\": 452," +
+		"    \"some_float\": 1.25" +
+		"}"
+
+	expectedResult := "type Generated struct {\n" +
+		"    Info string `json:\"info\"`\n" +
+		"    SomeInt int `json:\"someInt\"`\n" +
+		"    SomeFloat float64 `json:\"some_float\"`\n" +
+		"}"
+
+	jsonStr, err := NewJsonStr(rawJsonStr)
+	if err != nil {
+		t.Error("Unexpected error creating new JsonStr", err)
+		return
+	}
+	actualResult, err := jsonStr.GetAsGolangString()
+	if err != nil {
+		t.Error("Unexpected error returned while converting json to golang", err)
+		return
+	}
+	if actualResult != expectedResult {
+		reportIncorrectResults(t, expectedResult, actualResult)
+	}
+}
+
 func reportIncorrectResults(t *testing.T, expected, actual string) {
 	formatStr := "Actual result did not match expected.\n--- Expected --------\n%s\n"
 	formatStr += "-------------------\n"

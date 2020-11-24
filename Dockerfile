@@ -51,7 +51,7 @@ COPY package.json .
 COPY public ./public
 COPY src ./src
 
-# build front-end and back-end
+# build client and server
 RUN yarn install
 RUN yarn build
 RUN go build main.go
