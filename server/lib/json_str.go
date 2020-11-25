@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"gitlab.com/c0b/go-ordered-json"
 	"reflect"
+	"regexp"
 	"strings"
+	"time"
 )
 
 type JsonStr string
@@ -54,9 +56,25 @@ func (jsonStr JsonStr) validate() error {
 	return json.Unmarshal([]byte(jsonStr), &js)
 }
 
+func doesStrListContainStr(strList []string, str string) bool {
+	for _, strItem := range strList {
+		if strItem == str {
+			return true
+		}
+	}
+	return false
+}
+
+func getAsCamelCase(str string) string {
+	link := regexp.MustCompile("(^[A-Za-z])|_([A-Za-z])")
+	return link.ReplaceAllStringFunc(str, func(s string) string {
+		return strings.ToUpper(strings.Replace(s,"_","",-1))
+	})
+}
+
 func getAsGolangStructSection(key string, value interface{}, indentLevel int) string {
 	typeName := getTypeName(value)
-	fieldName := strings.Title(key)
+	fieldName := strings.Title(getAsCamelCase(key))
 
 	if typeName == "*ordered.OrderedMap" {
 		innerStructSection := strings.Repeat(" ", indentLevel * 4)
@@ -78,6 +96,13 @@ func getAsGolangStructSection(key string, value interface{}, indentLevel int) st
 		return innerStructSection
 	}
 
+	if typeName == "[]interface {}" {
+		listTypes := getListTypeNames(value.([]interface{}))
+		if len(listTypes) == 1 {
+			typeName = fmt.Sprintf("[]%s", listTypes[0])
+		}
+	}
+
 	structSection := strings.Repeat(" ", indentLevel * 4)
 	structSection += fieldName
 	structSection += " " + typeName
@@ -85,11 +110,33 @@ func getAsGolangStructSection(key string, value interface{}, indentLevel int) st
 	return structSection
 }
 
+func getListTypeNames(list []interface{}) []string {
+	typeNames := make([]string, 0)
+	for _, item := range list {
+		typeName := getTypeName(item)
+		if typeName == "[]interface {}" {
+			listTypes := getListTypeNames(item.([]interface{}))
+			if len(listTypes) == 1 {
+				typeName = fmt.Sprintf("[]%s", listTypes[0])
+			}
+		}
+		if !doesStrListContainStr(typeNames, typeName) {
+			typeNames = append(typeNames, typeName)
+		}
+	}
+	return typeNames
+}
+
 func getTypeName(v interface{}) string {
 	if v == nil {
 		return "interface{}"
 	}
 	typeName := reflect.TypeOf(v).String()
+	if typeName == "string" {
+		if isStrInTimeFormat(v.(string)) {
+			typeName = "time.Time"
+		}
+	}
 	if typeName == "json.Number" {
 		if _, err := v.(json.Number).Float64(); err == nil {
 			typeName = "float64"
@@ -99,4 +146,17 @@ func getTypeName(v interface{}) string {
 		}
 	}
 	return typeName
+}
+
+func isStrInTimeFormat(str string) bool {
+	validFormats := []string{
+		time.ANSIC, time.RFC822, time.RFC822Z, time.RFC1123,
+		time.RFC1123Z, time.RFC3339,
+	}
+	for _, validFormat := range validFormats {
+		if _, err := time.Parse(validFormat, str); err == nil {
+			return true
+		}
+	}
+	return false
 }

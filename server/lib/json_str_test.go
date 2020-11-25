@@ -32,7 +32,8 @@ func TestPrimitiveTypes(t *testing.T) {
 		"    \"someInt\": 452," +
 		"    \"someFloat\": 1.25," +
 		"    \"someNull\": null," +
-		"    \"someBoolean\": false" +
+		"    \"someBoolean\": false," +
+		"    \"someTime\": \"2019-08-22T18:10:37Z\"" +
 		"}"
 
 	expectedResult := "type Generated struct {\n" +
@@ -41,6 +42,7 @@ func TestPrimitiveTypes(t *testing.T) {
 		"    SomeFloat float64 `json:\"someFloat\"`\n" +
 		"    SomeNull interface{} `json:\"someNull\"`\n" +
 		"    SomeBoolean bool `json:\"someBoolean\"`\n" +
+		"    SomeTime time.Time `json:\"someTime\"`\n" +
 		"}"
 
 	jsonStr, err := NewJsonStr(rawJsonStr)
@@ -58,11 +60,6 @@ func TestPrimitiveTypes(t *testing.T) {
 	}
 }
 
-// The order of the keys in the json string should match the order of the keys
-// in the resulting golang struct.
-//
-// This test does not 100% guarantee that the key order will stay the same, but successful completion
-// means a very high likelyhood that they do.
 func TestKeyOrder(t *testing.T) {
 	rawJsonStr := "{" +
 		"    \"a\": 1," +
@@ -147,13 +144,45 @@ func TestKeyNames(t *testing.T) {
 	rawJsonStr := "{" +
 		"    \"info\": \"random info here\"," +
 		"    \"someInt\": 452," +
-		"    \"some_float\": 1.25" +
+		"    \"some_float\": 1.25," +
+		"    \"some_weird_BooleanHere\": true" +
 		"}"
 
 	expectedResult := "type Generated struct {\n" +
 		"    Info string `json:\"info\"`\n" +
 		"    SomeInt int `json:\"someInt\"`\n" +
 		"    SomeFloat float64 `json:\"some_float\"`\n" +
+		"    SomeWeirdBooleanHere bool `json:\"some_weird_BooleanHere\"`\n" +
+		"}"
+
+	jsonStr, err := NewJsonStr(rawJsonStr)
+	if err != nil {
+		t.Error("Unexpected error creating new JsonStr", err)
+		return
+	}
+	actualResult, err := jsonStr.GetAsGolangString()
+	if err != nil {
+		t.Error("Unexpected error returned while converting json to golang", err)
+		return
+	}
+	if actualResult != expectedResult {
+		reportIncorrectResults(t, expectedResult, actualResult)
+	}
+}
+
+func TestArrays(t *testing.T) {
+	rawJsonStr := "{" +
+		"    \"info\": \"random info here\"," +
+		"    \"simpleIntArray\": [1, 2, 3]," +
+		"    \"simpleCombinedArray\": [1, true, \"a\"]," +
+		"    \"twoDIntArray\": [[1,2,3], [1,2,3]]" +
+		"}"
+
+	expectedResult := "type Generated struct {\n" +
+		"    Info string `json:\"info\"`\n" +
+		"    SimpleIntArray []int `json:\"simpleIntArray\"`\n" +
+		"    SimpleCombinedArray []interface {} `json:\"simpleCombinedArray\"`\n" +
+		"    TwoDIntArray [][]int `json:\"twoDIntArray\"`\n" +
 		"}"
 
 	jsonStr, err := NewJsonStr(rawJsonStr)
