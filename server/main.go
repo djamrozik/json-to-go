@@ -38,17 +38,12 @@ func main() {
 }
 
 func handleConvertRequest(res http.ResponseWriter, req *http.Request) {
-	// only allowing POST requests
 	if req.Method != http.MethodPost {
 		log.Println("Got a request at /convertJson, but it was not a POST request")
 		http.Error(res, "Request to /convertJson must be a POST request", http.StatusMethodNotAllowed)
 		return
 	}
 
-	// decode request body to a ConvertRequest struct
-	// if the 'json' field is not present, will be an empty string in resulting struct
-	// other fields in the body are ignored
-	// only was this is an error is if the body is not present or body is malformed
 	decoder := json.NewDecoder(req.Body)
 	var convertRequest ConvertRequest
 	err := decoder.Decode(&convertRequest)
@@ -58,20 +53,25 @@ func handleConvertRequest(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// some quick validation that the json field is not empty
 	if convertRequest.Json == "" {
 		log.Println("Empty JSON field on request")
 		http.Error(res, "JSON field was empty", http.StatusBadRequest)
 		return
 	}
 
-	// where the actual work is taking place, converting json string to golang struct string
-	// if there is an error, return the error message
-	// if successful, then return golang struct string as data
-	resultingStruct, err := lib.ConvertJsonToGolang(convertRequest.Json)
+	jsonStr, err := lib.NewJsonStr(convertRequest.Json)
 	if err != nil {
-		log.Println("Error converting to struct:", err)
-		http.Error(res, err.Error(), http.StatusBadRequest) // TODO : differentiate between internal/external error
+		log.Println("Invalid JSON", err.Error())
+		http.Error(res, err.Error(), http.StatusBadRequest)
+		return
 	}
+
+	resultingStruct, err := jsonStr.GetAsGolangString()
+	if err != nil {
+		log.Println("Error converting to struct", err)
+		http.Error(res, err.Error(), http.StatusBadRequest)
+		return
+	}
+
 	_, _ = res.Write([]byte(resultingStruct))
 }
