@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 
 import AceEditor from "react-ace";
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-golang";
@@ -97,11 +100,9 @@ function HomePage() {
           />
         </div>
         <div className="home-page-content-cell">
-          <textarea
-            className="results-textarea"
-            value={isRequestError ? errorMessage : golangStruct}
-            readOnly
-          />
+          <SyntaxHighlighter language={"go"} style={dark} className="resulting-struct">
+            { isRequestError ? errorMessage : golangStruct }
+          </SyntaxHighlighter>
         </div>
       </div>
     </div>

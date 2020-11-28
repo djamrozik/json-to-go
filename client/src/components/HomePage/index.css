@@ -8,7 +8,7 @@ body {
 }
 
 html, body, #root, .home-page {
-    height: 100%;
+    height: 100vh;
 }
 
 .ace_scrollbar-h {
@@ -23,15 +23,19 @@ html, body, #root, .home-page {
 .home-page-content {
     flex: 1;
     display: flex;
+    height: calc(100vh - 60px);
 }
 
 .home-page-content-cell {
     flex-basis: 50%;
+    flex-shrink: 0;
     display: flex;
+    overflow-x: auto;
 }
 
 .home-page-header {
     display: flex;
+    height: 60px;
 }
 
 .header-cell {
@@ -46,15 +50,14 @@ html, body, #root, .home-page {
     font-size: 1.2rem;
 }
 
-.results-textarea {
+/* these are all overrides for the given style from prismjs */
+.resulting-struct {
     width: 100%;
-    background-color: #444;
-    color: white;
-    padding: 1rem;
-    border-color: #222;
-    font-size: 1.3rem;
-}
 
-.results-textarea {
-    outline: none;
+    margin: 0!important;
+    border: none!important;
+    border-left: 1px solid #222!important;
+    border-radius: 0!important;
+    background: #444!important;
+    box-shadow: none!important;
 }

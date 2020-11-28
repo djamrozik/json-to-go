@@ -6,7 +6,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # update the repository sources list
 # and install dependencies
 RUN apt-get update \
-    && apt-get install -y curl gnupg2 \
+    && apt-get install -y curl gnupg2 build-essential \
     && apt-get -y autoclean
 
 # nvm environment variables
@@ -46,18 +46,22 @@ RUN go version
 # copy all files over
 RUN mkdir /app
 WORKDIR /app
-COPY main.go .
-COPY package.json .
-COPY public ./public
-COPY src ./src
+COPY Makefile .
+COPY client ./client
+COPY server ./server
 
-# build client and server
-RUN yarn install
-RUN yarn build
-RUN go build main.go
+# build server (which also includes the client as part of itself)
+RUN make build-server
+
+# clean-up, remove unneeded client files to save space
+RUN rm -rf ./client/node_modules
+RUN rm -rf ./client/build
 
 # show output (run with --progress plain to see)
 RUN echo "showing build output" && ls
+RUN ls /app/server
+RUN ls /app/server/build
 
-# set default command
-CMD /app/main
+# set default command (need to run from server dir)
+WORKDIR /app/server
+CMD ./main

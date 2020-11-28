@@ -23,9 +23,116 @@ Prerequisites for building/deploying
 * Configure Docker to use GCP with `gcloud auth configure-docker`
 * Docker daemon is running
 
-To build run the following command from the main directory:
-* `docker build . -t json-to-golang:latest`
+To build/tag/deploy run the following command from the main directory:
+* `make upload-image` (Specific details of this command are in the Makefile)
 
-Deploying
-* Tag the image `docker tag json-to-golang:latest gcr.io/json-to-golang/json-to-golang:latest`
-* Push to container registry `docker push gcr.io/json-to-golang/json-to-golang:latest`
+## Manual Testing
+
+### Good JSON to Use
+
+```
+{
+	"id": 1296269,
+	"owner": {
+		"login": "octocat",
+		"id": 1,
+		"avatar_url": "https://github.com/images/error/octocat_happy.gif",
+		"gravatar_id": "somehexcode",
+		"url": "https://api.github.com/users/octocat",
+		"html_url": "https://github.com/octocat",
+		"followers_url": "https://api.github.com/users/octocat/followers",
+		"repos_url": "https://api.github.com/users/octocat/repos",
+		"events_url": "https://api.github.com/users/octocat/events{/privacy}",
+		"received_events_url": "https://api.github.com/users/octocat/received_events",
+		"type": "User",
+		"site_admin": false
+	},
+	"name": "Hello-World",
+	"full_name": "octocat/Hello-World",
+	"has_wiki": true,
+	"has_downloads": true,
+	"pushed_at": "2011-01-26T19:06:43Z",
+	"created_at": "2011-01-26T19:01:12Z",
+	"updated_at": "2011-01-26T19:14:43Z",
+	"permissions": {
+		"admin": false,
+		"push": false,
+		"pull": true
+	},
+	"subscribers_count": 42,
+	"organization": {
+		"login": "octocat",
+		"id": 1,
+		"avatar_url": "https://github.com/images/error/octocat_happy.gif",
+		"gravatar_id": "somehexcode",
+		"site_admin": false
+	},
+	"parent": {
+		"id": 1296269,
+		"owner": {
+			"login": "octocat",
+			"id": 1,
+			"avatar_url": "https://github.com/images/error/octocat_happy.gif",
+			"gravatar_id": "somehexcode",
+			"type": "User",
+			"site_admin": false
+		},
+		"name": "Hello-World",
+		"full_name": "octocat/Hello-World",
+		"description": "This your first repo!",
+		"private": false,
+		"fork": true,
+		"homepage": "https://github.com",
+		"language": null,
+		"forks_count": 9,
+		"stargazers_count": 80,
+		"watchers_count": 80,
+		"size": 108,
+		"default_branch": "master",
+		"open_issues_count": 0,
+		"has_issues": true,
+		"has_wiki": true,
+		"has_downloads": true,
+		"pushed_at": "2011-01-26T19:06:43Z",
+		"created_at": "2011-01-26T19:01:12Z",
+		"updated_at": "2011-01-26T19:14:43Z",
+		"permissions": {
+			"admin": false,
+			"push": false,
+			"pull": true
+		}
+	},
+	"source": {
+		"id": 1296269,
+		"owner": {
+			"login": "octocat",
+			"id": 1,
+			"received_events_url": "https://api.github.com/users/octocat/received_events",
+			"type": "User",
+			"site_admin": false
+		},
+		"name": "Hello-World",
+		"full_name": "octocat/Hello-World",
+		"description": "This your first repo!",
+		"private": false,
+		"fork": true,
+		"mirror_url": "git://git.example.com/octocat/Hello-World",
+		"homepage": "https://github.com",
+		"language": null,
+		"forks_count": 9,
+		"watchers_count": 80,
+		"size": 108,
+		"default_branch": "master",
+		"open_issues_count": 0,
+		"has_issues": true,
+		"has_wiki": true,
+		"has_downloads": true,
+		"pushed_at": "2011-01-26T19:06:43Z",
+		"created_at": "2011-01-26T19:01:12Z",
+		"permissions": {
+			"admin": false,
+			"pull": true
+		}
+	}
+}
+```
