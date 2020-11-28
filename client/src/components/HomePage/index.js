@@ -20,16 +20,13 @@ const starterJson = `{
 function HomePage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [golangStruct, setGolangStruct] = useState(starterStruct);
-  const [isJsonValid, setIsJsonValid] = useState(true);
   const [isRequestError, setIsRequestError] = useState(false);
   const [jsonText, setJsonText] = useState(starterJson);
 
   const onJsonChange = newJson => {
-    const isNewJsonValid = isJsonString(newJson);
-    updateJsonValidity(newJson, isNewJsonValid);
     setJsonText(newJson);
 
-    if (!isNewJsonValid) {
+    if (!isJsonString(newJson)) {
       return;
     }
 
@@ -46,14 +43,7 @@ function HomePage() {
     });
   }
 
-  const updateJsonValidity = (newJson, isNewJsonValid) => {
-    if (isNewJsonValid && !isJsonValid) {
-      setIsJsonValid(true);
-    }
-    if (!isNewJsonValid && isJsonValid) {
-      setIsJsonValid(false);
-    }
-  }
+  const isJsonValid = isJsonString(jsonText);
 
   const jsonValidInfoStyle = {
     'color': isJsonValid ? 'green' : 'red'
@@ -103,7 +93,7 @@ function HomePage() {
             style={editorStyle}
             fontSize={14}
             showPrintMargin={false}
-            debounceChangePeriod={1000}
+            debounceChangePeriod={100}
           />
         </div>
         <div className="home-page-content-cell">
