@@ -43,6 +43,28 @@ html, body, #root, .home-page {
     overflow-x: auto;
 }
 
+.copied-status-text {
+    color: green;
+    font-size: 1rem;
+    padding-right: 0.5rem;
+    margin-top: 2px;
+}
+
+.copy-clipboard {
+    color: white;
+    font-size: 1.4rem;
+    margin-top: 1px;
+}
+
+.copy-clipboard-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.copy-clipboard:hover {
+    cursor: pointer;
+}
+
 .home-page {
     display: flex;
     flex-direction: column;

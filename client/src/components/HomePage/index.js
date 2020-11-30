@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AceEditor from "react-ace";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+import Tooltip from '@material-ui/core/Tooltip';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faClipboard } from '@fortawesome/free-solid-svg-icons'
 
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-json";
@@ -20,11 +25,35 @@ const starterJson = `{
   "info": "Add JSON here"
 }`;
 
+const ClipboardCopy = React.forwardRef((props, ref) => {
+  return (
+    <div {...props} ref={ref}>
+      <CopyToClipboard text={props.text} onCopy={props.onCopy}>
+        <FontAwesomeIcon icon={faClipboard} className="copy-clipboard" />
+      </CopyToClipboard>
+    </div>
+  )
+})
+
 function HomePage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [golangStruct, setGolangStruct] = useState(starterStruct);
   const [isRequestError, setIsRequestError] = useState(false);
   const [jsonText, setJsonText] = useState(starterJson);
+  const [wasCopied, setWasCopied] = useState(false);
+
+  useEffect(() => {
+    if (wasCopied === false) {
+      return;
+    }
+    setTimeout(() => {
+      setWasCopied(false);
+    }, 2000)
+  }, [wasCopied])
+
+  const onClipboardCopy = () => {
+    setWasCopied(true);
+  }
 
   const onJsonChange = newJson => {
     setJsonText(newJson);
@@ -61,6 +90,12 @@ function HomePage() {
     'color': 'red'
   }
 
+  const tooltipTextStyle = {
+    fontSize: '0.9rem',
+    padding: '0.5rem 0.25rem',
+    margin: '0'
+  }
+
   return (
     <div className="home-page">
       <div className="home-page-header">
@@ -82,6 +117,16 @@ function HomePage() {
           </div>
           <div className="header-cell-right" style={requestErrorStyle}>
             { isRequestError && 'Request Error' }
+            { (!isRequestError && golangStruct) && (
+              <div className="copy-clipboard-wrapper">
+                {
+                  wasCopied && <span className="copied-status-text">Copied!</span>
+                }
+                <Tooltip title={<p style={tooltipTextStyle}>Copy to Clipboard</p>}>
+                  <ClipboardCopy text={golangStruct} onCopy={onClipboardCopy} />
+                </Tooltip>
+              </div>
+            )}
           </div>
         </div>
       </div>
