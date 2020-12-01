@@ -77,10 +77,21 @@ html, body, #root, .home-page {
 }
 
 .home-page-content-cell {
-    flex-basis: 50%;
+    flex: 1;
     flex-shrink: 0;
     display: flex;
     overflow-x: auto;
+    border: 1px solid #222;
+}
+
+.home-page-content-cell:first-child {
+    border-left: none;
+    border-bottom: none;
+}
+
+.home-page-content-cell:nth-child(2) {
+    border-right: none;
+    border-bottom: none;
 }
 
 .home-page-header {
@@ -89,24 +100,35 @@ html, body, #root, .home-page {
 }
 
 .header-cell {
+    flex: 1;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     color: white;
     padding: 1rem;
     font-weight: bold;
-    width: 50%;
     background-color: #444;
     border: 1px solid #222;
     font-size: 1.2rem;
 }
 
-/* these are all overrides for the given style from prismjs */
+.header-cell:first-child {
+    border-top: none;
+    border-left: none;
+}
+
+.header-cell:nth-child(2) {
+    border-top: none;
+    border-right: none;
+}
+
+
 .resulting-struct {
     width: 100%;
 
+    /* these are all overrides for the given style from prismjs */
     margin: 0!important;
     border: none!important;
-    border-left: 1px solid #222!important;
     border-radius: 0!important;
     background: #444!important;
     box-shadow: none!important;
