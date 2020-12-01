@@ -44,7 +44,8 @@ html, body, #root, .home-page {
 }
 
 .copied-status-text {
-    color: green;
+    color: #0ffc03;
+    letter-spacing: 0.06rem;
     font-size: 1rem;
     padding-right: 0.5rem;
     margin-top: 2px;

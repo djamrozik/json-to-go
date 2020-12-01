@@ -48,7 +48,7 @@ function HomePage() {
     }
     setTimeout(() => {
       setWasCopied(false);
-    }, 2000)
+    }, 5000)
   }, [wasCopied])
 
   const onClipboardCopy = () => {
@@ -78,7 +78,7 @@ function HomePage() {
   const isJsonValid = isJsonString(jsonText);
 
   const jsonValidInfoStyle = {
-    'color': isJsonValid ? 'green' : 'red'
+    'color': isJsonValid ? '#0ffc03' : 'red'
   }
 
   const editorStyle = {
@@ -120,7 +120,7 @@ function HomePage() {
             { (!isRequestError && golangStruct) && (
               <div className="copy-clipboard-wrapper">
                 {
-                  wasCopied && <span className="copied-status-text">Copied!</span>
+                  wasCopied && <span className="copied-status-text">Copied&nbsp;&#10004;</span>
                 }
                 <Tooltip title={<p style={tooltipTextStyle}>Copy to Clipboard</p>}>
                   <ClipboardCopy text={golangStruct} onCopy={onClipboardCopy} />
