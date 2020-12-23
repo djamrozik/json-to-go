@@ -56,6 +56,40 @@ func (jsonStr JsonStr) validate() error {
 	return json.Unmarshal([]byte(jsonStr), &js)
 }
 
+func combineOrderedMaps(orderedMaps []*ordered.OrderedMap) *ordered.OrderedMap {
+	result := ordered.NewOrderedMap()
+	for _, om := range orderedMaps {
+		iter := om.EntriesIter()
+		for {
+			pair, ok := iter()
+			if !ok {
+				break
+			}
+			resValue, ok := result.GetValue(pair.Key)
+			if !ok {
+				result.Set(pair.Key, pair.Value)
+			} else if resValue != nil {
+				typeInResult := getTypeName(resValue)
+				pairType := getTypeName(pair.Value)
+				if typeInResult != pairType {
+					result.Set(pair.Key, nil)
+				}
+			}
+		}
+	}
+	return result
+}
+
+func convertToOrderedMapList(val interface{}) []*ordered.OrderedMap {
+	result := make([]*ordered.OrderedMap, 0)
+	valList := val.([]interface{})
+	for _, valItem := range valList {
+		converted := valItem.(*ordered.OrderedMap)
+		result = append(result, converted)
+	}
+	return result
+}
+
 func doesStrListContainStr(strList []string, str string) bool {
 	for _, strItem := range strList {
 		if strItem == str {
@@ -68,7 +102,7 @@ func doesStrListContainStr(strList []string, str string) bool {
 func getAsCamelCase(str string) string {
 	link := regexp.MustCompile("(^[A-Za-z])|_([A-Za-z])")
 	return link.ReplaceAllStringFunc(str, func(s string) string {
-		return strings.ToUpper(strings.Replace(s,"_","",-1))
+		return strings.ToUpper(strings.Replace(s, "_", "", -1))
 	})
 }
 
@@ -77,7 +111,7 @@ func getAsGolangStructSection(key string, value interface{}, indentLevel int) st
 	fieldName := strings.Title(getAsCamelCase(key))
 
 	if typeName == "*ordered.OrderedMap" {
-		innerStructSection := strings.Repeat(" ", indentLevel * 4)
+		innerStructSection := strings.Repeat(" ", indentLevel*4)
 		innerStructSection += fieldName + " struct {\n"
 
 		om := value.(*ordered.OrderedMap)
@@ -87,12 +121,12 @@ func getAsGolangStructSection(key string, value interface{}, indentLevel int) st
 			if !ok {
 				break
 			}
-			innerStructLine := getAsGolangStructSection(pair.Key, pair.Value, indentLevel + 1)
+			innerStructLine := getAsGolangStructSection(pair.Key, pair.Value, indentLevel+1)
 			innerStructSection += fmt.Sprintf("%s\n", innerStructLine)
 		}
 
 		finalLineFmt := "%s} `json:\"%s\"`"
-		innerStructSection += fmt.Sprintf(finalLineFmt, strings.Repeat(" ", indentLevel * 4), key)
+		innerStructSection += fmt.Sprintf(finalLineFmt, strings.Repeat(" ", indentLevel*4), key)
 		return innerStructSection
 	}
 
@@ -103,7 +137,29 @@ func getAsGolangStructSection(key string, value interface{}, indentLevel int) st
 		}
 	}
 
-	structSection := strings.Repeat(" ", indentLevel * 4)
+	// type name could be set to this from above section
+	if typeName == "[]*ordered.OrderedMap" {
+		convertedOrderedMapList := convertToOrderedMapList(value)
+		combinedMap := combineOrderedMaps(convertedOrderedMapList)
+		innerStructSection := strings.Repeat(" ", indentLevel*4)
+		innerStructSection += fieldName + " []struct {\n"
+
+		iter := combinedMap.EntriesIter()
+		for {
+			pair, ok := iter()
+			if !ok {
+				break
+			}
+			innerStructLine := getAsGolangStructSection(pair.Key, pair.Value, indentLevel+1)
+			innerStructSection += fmt.Sprintf("%s\n", innerStructLine)
+		}
+
+		finalLineFmt := "%s} `json:\"%s\"`"
+		innerStructSection += fmt.Sprintf(finalLineFmt, strings.Repeat(" ", indentLevel*4), key)
+		return innerStructSection
+	}
+
+	structSection := strings.Repeat(" ", indentLevel*4)
 	structSection += fieldName
 	structSection += " " + typeName
 	structSection += " " + fmt.Sprintf("`json:\"%s\"`", key)

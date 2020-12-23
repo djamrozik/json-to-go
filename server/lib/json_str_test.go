@@ -119,11 +119,11 @@ func TestBasicInnerObject(t *testing.T) {
 
 	expectedResult :=
 		"type Generated struct {\n" +
-		"    Info string `json:\"info\"`\n" +
-		"    Inner struct {\n" +
-		"        InnerKey bool `json:\"innerKey\"`\n" +
-		"    } `json:\"inner\"`\n" +
-		"}"
+			"    Info string `json:\"info\"`\n" +
+			"    Inner struct {\n" +
+			"        InnerKey bool `json:\"innerKey\"`\n" +
+			"    } `json:\"inner\"`\n" +
+			"}"
 
 	jsonStr, err := NewJsonStr(rawJsonStr)
 	if err != nil {
@@ -183,6 +183,42 @@ func TestArrays(t *testing.T) {
 		"    SimpleIntArray []int `json:\"simpleIntArray\"`\n" +
 		"    SimpleCombinedArray []interface {} `json:\"simpleCombinedArray\"`\n" +
 		"    TwoDIntArray [][]int `json:\"twoDIntArray\"`\n" +
+		"}"
+
+	jsonStr, err := NewJsonStr(rawJsonStr)
+	if err != nil {
+		t.Error("Unexpected error creating new JsonStr", err)
+		return
+	}
+	actualResult, err := jsonStr.GetAsGolangString()
+	if err != nil {
+		t.Error("Unexpected error returned while converting json to golang", err)
+		return
+	}
+	if actualResult != expectedResult {
+		reportIncorrectResults(t, expectedResult, actualResult)
+	}
+}
+
+func TestArrayOfObjects(t *testing.T) {
+	rawJsonStr := "{" +
+		"    \"info\": \"random info here\"," +
+		"    \"simpleIntArray\": [1, 2, 3]," +
+		"    \"arrayOfObjects\": [" +
+		"        {\"a\": 1, \"b\": true}," +
+		"        {\"a\": 5, \"b\": 0.4}," +
+		"        {\"a\": 5, \"b\": 0.6, \"c\": \"strr\"}" +
+		"	 ]" +
+		"}"
+
+	expectedResult := "type Generated struct {\n" +
+		"    Info string `json:\"info\"`\n" +
+		"    SimpleIntArray []int `json:\"simpleIntArray\"`\n" +
+		"    ArrayOfObjects []struct {\n" +
+		"        A int `json:\"a\"`\n" +
+		"        B interface{} `json:\"b\"`\n" +
+		"        C string `json:\"c\"`\n" +
+		"    } `json:\"arrayOfObjects\"`\n" +
 		"}"
 
 	jsonStr, err := NewJsonStr(rawJsonStr)
