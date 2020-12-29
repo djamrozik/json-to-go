@@ -15,14 +15,11 @@ type ConvertRequest struct {
 }
 
 func main() {
-	// any unmatched request is sent to serve files from /build
 	fs := http.FileServer(http.Dir("./build"))
 	http.Handle("/", fs)
 
-	// handle request to convert JSON to a Golang struct
 	http.HandleFunc("/convertJson", handleConvertRequest)
 
-	// get port to listen on
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Printf("PORT env var not set, using default port")
@@ -30,7 +27,6 @@ func main() {
 	}
 	log.Printf("Listening on :%s...", port)
 
-	// start server
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal(err)

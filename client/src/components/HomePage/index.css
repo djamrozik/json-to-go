@@ -74,7 +74,6 @@ html, body, #root, .home-page {
 .home-page-content {
     flex: 1;
     display: flex;
-    height: calc(100vh - 60px);
 }
 
 .home-page-content-cell {
@@ -98,6 +97,23 @@ html, body, #root, .home-page {
 .home-page-header {
     display: flex;
     height: 60px;
+}
+
+.home-page-footer {
+    display: flex;
+    height: 50px;
+    align-items: center;
+    justify-content: flex-end;
+    background-color: #444;
+    border-top: 2px solid #222;
+    color: white;
+    padding: 0 2rem;
+}
+
+.home-page-footer > a {
+    padding: 0 0.4rem;
+    color: dodgerblue;
+    text-decoration: none;
 }
 
 .header-cell {

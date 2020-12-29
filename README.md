@@ -1,4 +1,14 @@
-# Owner's Manual
+# json-to-golang
+
+
+## About
+
+[json-to-golang](http://json-to-golang.com) is a simple web app to convert raw json to a golang struct.
+
+The main logic is in `server/lib/json_str.go`.
+
+Tests can be run from `./server` with `go test -v ./lib`
+
 
 ## Technical Notes
 
@@ -15,16 +25,6 @@ Here is some more info about that package
 * Article: https://medium.com/@ty0h/preserving-json-object-keys-order-in-javascript-python-and-go-language-170eaae0de03
 * Docs: https://godoc.org/gitlab.com/c0b/go-ordered-json
 
-## Building and Deploying to Container Register
-
-Prerequisites for building/deploying
-* Docker is installed
-* GCP SDK is installed
-* Configure Docker to use GCP with `gcloud auth configure-docker`
-* Docker daemon is running
-
-To build/tag/deploy run the following command from the main directory:
-* `make upload-image` (Specific details of this command are in the Makefile)
 
 ## Manual Testing
 

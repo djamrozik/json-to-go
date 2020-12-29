@@ -17,12 +17,30 @@ import "ace-builds/src-noconflict/theme-monokai";
 import { fetchConvertedJson, isJsonString } from './helpers';
 import './index.css';
 
+const currentDate = new Date();
+const currentDayOfMonth = currentDate.getDate();
+const currentDateStr = `${currentDate.getMonth()}-${currentDate.getDate()}-${currentDate.getFullYear()}`
+
 const starterStruct = `type Generated struct {
     Info string \`json:"info"\`
+    ExampleValues struct {
+        DayOfMonth int \`json:"dayOfMonth"\`
+        DateStr string \`json:"dateStr"\`
+        SomeRandomFloat float64 \`json:"someRandomFloat"\`
+        StrArray []string \`json:"strArray"\`
+        IsWorking bool \`json:"isWorking"\`
+    } \`json:"exampleValues"\`
 }`
 
 const starterJson = `{
-  "info": "Add JSON here"
+  "info": "Add JSON here",
+  "exampleValues": {
+    "dayOfMonth": ${currentDayOfMonth},
+    "dateStr": "${currentDateStr}",
+    "someRandomFloat": ${Math.round(Math.random() * 10 * 100) / 100},
+    "strArray": ["hello", "world"],
+    "isWorking": true
+  }
 }`;
 
 const ClipboardCopy = React.forwardRef((props, ref) => {
@@ -149,6 +167,11 @@ function HomePage() {
             { isRequestError ? errorMessage : golangStruct }
           </SyntaxHighlighter>
         </div>
+      </div>
+      <div className="home-page-footer">
+        json-to-golang @ {(new Date()).getFullYear()} /
+        <a href="https://github.com/yavello/json-to-golang">github</a> /
+        <a href="https://github.com/yavello/json-to-golang/issues/new">report an issue</a>
       </div>
     </div>
   )

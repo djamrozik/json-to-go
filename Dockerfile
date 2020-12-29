@@ -46,12 +46,13 @@ RUN go version
 # copy all files over
 RUN mkdir /app
 WORKDIR /app
-COPY Makefile .
 COPY client ./client
 COPY server ./server
 
 # build server (which also includes the client as part of itself)
-RUN make build-server
+RUN cd client && yarn install && yarn build
+RUN cp -R client/build server/
+RUN cd server && go build main.go
 
 # clean-up, remove unneeded client files to save space
 RUN rm -rf ./client/node_modules
