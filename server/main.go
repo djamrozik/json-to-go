@@ -40,6 +40,8 @@ func handleConvertRequest(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	req.Body = http.MaxBytesReader(res, req.Body, 2 * 1024 * 1024)
+
 	decoder := json.NewDecoder(req.Body)
 	var convertRequest ConvertRequest
 	err := decoder.Decode(&convertRequest)
