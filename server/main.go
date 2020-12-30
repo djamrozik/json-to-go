@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"json-to-golang/lib"
 	"log"
 	"net/http"
@@ -46,8 +47,9 @@ func handleConvertRequest(res http.ResponseWriter, req *http.Request) {
 	var convertRequest ConvertRequest
 	err := decoder.Decode(&convertRequest)
 	if err != nil {
-		log.Println("Could not get request body", err)
-		http.Error(res, "Could not get request body", http.StatusBadRequest)
+		errMsg := fmt.Sprintf("Could not get request body - %s", err.Error())
+		log.Println(errMsg)
+		http.Error(res, errMsg, http.StatusBadRequest)
 		return
 	}
 
