@@ -1,9 +1,9 @@
-# json-to-golang
+# json-to-go.com
 
 
 ## About
 
-[json-to-golang](http://json-to-golang.com) is a simple web app to convert raw json to a golang struct.
+[json-to-go.com](http://json-to-go.com) is a simple web app to convert raw json to a golang struct.
 
 The main logic is in `server/lib/json_str.go`.
 

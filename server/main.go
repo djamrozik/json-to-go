@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"json-to-golang/lib"
+	"json-to-go.com/lib"
 	"log"
 	"net/http"
 	"os"

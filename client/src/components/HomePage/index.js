@@ -169,7 +169,7 @@ function HomePage() {
         </div>
       </div>
       <div className="home-page-footer">
-        json-to-golang @ {(new Date()).getFullYear()} /
+        json-to-go.com @ {(new Date()).getFullYear()} /
         <a href="https://github.com/hyeres/json-to-golang">github</a> /
         <a href="https://github.com/hyeres/json-to-golang/issues/new">report an issue</a>
       </div>

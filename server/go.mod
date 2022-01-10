@@ -1,4 +1,4 @@
-module json-to-golang
+module json-to-go.com
 
 go 1.14
 
