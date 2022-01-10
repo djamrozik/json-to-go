@@ -7,7 +7,30 @@
 
 The main logic is in `server/lib/json_str.go`.
 
+
+## Testing
+
 Tests can be run from `./server` with `go test -v ./lib`
+
+
+## Building, Running, and Deploying
+
+To build a new image:
+* `docker build . -t json-to-go.com:latest`
+
+To run the backend:
+* Build a new and up-to-date image
+* Run a container with `docker run -p 4000:4000 json-to-go.com:latest`
+
+To run the frontend:
+* `cd client`
+* `yarn install`
+* `yarn start`
+
+To deploy the backend:
+* Build an up-to-date image tagged with `latest`
+* Tag for deployment: `docker tag spotifycharts:latest gcr.io/json-to-golang/json-to-golang:latest`
+* Push to container registry: `docker push gcr.io/json-to-golang/json-to-golang:latest`
 
 
 ## Technical Notes
