@@ -29,7 +29,7 @@ To run the frontend:
 
 To deploy the backend:
 * Build an up-to-date image tagged with `latest`
-* Tag for deployment: `docker tag spotifycharts:latest gcr.io/json-to-golang/json-to-golang:latest`
+* Tag for deployment: `docker tag json-to-go.com:latest gcr.io/json-to-golang/json-to-golang:latest`
 * Push to container registry: `docker push gcr.io/json-to-golang/json-to-golang:latest`
 
 

@@ -170,8 +170,8 @@ function HomePage() {
       </div>
       <div className="home-page-footer">
         json-to-go.com @ {(new Date()).getFullYear()} /
-        <a href="https://github.com/hyeres/json-to-golang">github</a> /
-        <a href="https://github.com/hyeres/json-to-golang/issues/new">report an issue</a>
+        <a href="https://github.com/djamrozik/json-to-go.com">github</a> /
+        <a href="https://github.com/djamrozik/json-to-go.com/issues/new">report an issue</a>
       </div>
     </div>
   )
